@@ -18,6 +18,21 @@
         margin-inline: 35%;
     }
   }
+  #terminal{
+    background-color:white;
+    color:#282C34;
+    border-color: #d4d9e3;
+    border-style: solid;
+    border-width: 1px;
+    white-space: pre-line;
+    padding: 1em 1em;
+    border-radius: 8px;
+  }
+  #btnCalcular{
+    float: right;
+    margin-right:1em;
+    border-radius: 4px;
+  }
 
 </style>
 
@@ -35,7 +50,7 @@
 
 
 <!-- botao enviar -->
-<button style="float: right;margin-right:1em;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaobtn()">
+<button id="btnCalcular" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaobtn()">
 Calcular
 </button>
 
@@ -46,7 +61,7 @@ Calcular
 <br>
 
 <!-- texto terminal -->
-<p style="background-color:#282C34;color:white;white-space: pre-line;padding: 1em 1em" id=terminal >Calculadora SIGAA JS V1.0 <br> Observação: Insira somente um código de horário por vez!</p>
+<p id=terminal >Calculadora de parcelamentos a pagar<br> Observação: Insira somente um código de horário por vez!</p>
 
 </div>
 
