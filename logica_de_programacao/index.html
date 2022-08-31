@@ -45,19 +45,25 @@
 <h6>Valor:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
    <input class="mdl-textfield__input" type="text" id="formterminal">
-   <label class="mdl-textfield__label" for="sample1">Ex:15</label>
+   <label class="mdl-textfield__label">Ex:15</label>
 </div>
 
 <h6>Numero de parcelas totais:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
     <input class="mdl-textfield__input" type="text" id="formParcelasTotais">
-    <label class="mdl-textfield__label" for="sample1">Ex:12</label>
+    <label class="mdl-textfield__label">Ex:12</label>
  </div>
 
  <h6>Juros simples em porcentagem:</h6>
  <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
     <input class="mdl-textfield__input" type="text" id="formJurosSimples">
-    <label class="mdl-textfield__label" for="sample1">Ex:10 sem o "%"</label>
+    <label class="mdl-textfield__label">Ex:10 sem o "%"</label>
+ </div>
+
+ <h6>Juros compostos em porcentagem:</h6>
+ <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+    <input class="mdl-textfield__input" type="text" id="formJurosCompostos">
+    <label class="mdl-textfield__label">Ex:5 sem o "%"</label>
  </div>
 
 
@@ -93,14 +99,25 @@ function funcaobtn(){
 
    var varformJurosSimples = document.getElementById("formJurosSimples").value;
    if (varformJurosSimples == "") {
-    varformJurosSimples = "100";
+    varformJurosSimples = "0";
    }
    let jurosSimples = parseFloat(varformJurosSimples)*0.01;
    
    valor = valor * parcelasTotais;
-   valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
+   const valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
 
-   document.getElementById("terminal").innerHTML = "Valor total: " + valor + "\n" + "Valor total com juros: "+ valorJurosSimples;
+   var varformJurosCompostos = document.getElementById("formJurosCompostos").value;
+   if (varformJurosCompostos == "") {
+    varformJurosCompostos = "0";
+   }
+   const jurosCompostos = parseFloat(varformJurosCompostos)*0.01;
+   let valorJurosCompostos = valor * (1 + jurosCompostos)**parcelasTotais ;
+   valorJurosCompostos = valorJurosCompostos.toFixed(2);
+   
+   const strValorTotal = "Valor total: " + valor + "\n";
+   const strValorTotalJurosSimples = "Valor total com juros simples: "+ valorJurosSimples + "\n";
+   const strValorTotalJurosCompostos = "Valor total com juros compostos: "+ valorJurosCompostos + "\n";
+   document.getElementById("terminal").innerHTML = strValorTotal + strValorTotalJurosSimples + strValorTotalJurosCompostos;
  }
 
  if (varformterminal == ""){
