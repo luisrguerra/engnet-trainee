@@ -79,7 +79,7 @@ Calcular
 <br>
 
 <!-- texto terminal -->
-<p id=terminal >Calculadora de parcelamentos a pagar<br> Observação:</p>
+<p id=terminal >Calculadora de parcelamentos a pagar<br> Observação: Utilizar ponto no lugar de vírgula</p>
 
 </div>
 
@@ -104,7 +104,8 @@ function funcaobtn(){
    let jurosSimples = parseFloat(varformJurosSimples)*0.01;
    
    const valor = parcela * parcelasTotais;
-   const valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
+   let valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
+   valorJurosSimples = valorJurosSimples.toFixed(2);
 
    var varformJurosCompostos = document.getElementById("formJurosCompostos").value;
    if (varformJurosCompostos == "") {
