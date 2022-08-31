@@ -42,14 +42,16 @@
 <br>
 
 <!-- campo de texto -->
+<h6>Valor:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
    <input class="mdl-textfield__input" type="text" id="formterminal">
-   <label style="color: black ;" class="mdl-textfield__label" for="sample1">Valor</label>
+   <label class="mdl-textfield__label" for="sample1">Ex:15</label>
 </div>
 
+<h6>Numero de parcelas totais:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
     <input class="mdl-textfield__input" type="text" id="formParcelasTotais">
-    <label style="color: black ;" class="mdl-textfield__label" for="sample1">Numero de parcelas totais</label>
+    <label class="mdl-textfield__label" for="sample1">Ex:12</label>
  </div>
 
 
@@ -78,10 +80,13 @@ function funcaobtn(){
    let valor = parseFloat(varformterminal);
    
    var varformParcelasTotais = document.getElementById("formParcelasTotais").value;
+   if (varformParcelasTotais == "") {
+    varformParcelasTotais = "1";
+   }
    let parcelasTotais = parseFloat(varformParcelasTotais);
 
    valor = valor * parcelasTotais;
-   document.getElementById("terminal").innerHTML = valor;
+   document.getElementById("terminal").innerHTML = "Valor total: " + valor;
  }
 
  if (varformterminal == ""){
