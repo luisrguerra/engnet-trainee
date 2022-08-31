@@ -41,7 +41,7 @@
 <!-- pular linha -->
 <br>
 
-<!-- campo de texto -->
+<!-- campo de input de texto -->
 <h6>Valor:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
    <input class="mdl-textfield__input" type="text" id="formterminal">
@@ -89,7 +89,7 @@ Calcular
 function funcaobtn(){
  if (varformterminal != ""){
    var varformterminal = document.getElementById("formterminal").value;
-   let valor = parseFloat(varformterminal);
+   let parcela = parseFloat(varformterminal);
    
    var varformParcelasTotais = document.getElementById("formParcelasTotais").value;
    if (varformParcelasTotais == "") {
@@ -103,7 +103,7 @@ function funcaobtn(){
    }
    let jurosSimples = parseFloat(varformJurosSimples)*0.01;
    
-   valor = valor * parcelasTotais;
+   const valor = parcela * parcelasTotais;
    const valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
 
    var varformJurosCompostos = document.getElementById("formJurosCompostos").value;
@@ -113,13 +113,18 @@ function funcaobtn(){
    const jurosCompostos = parseFloat(varformJurosCompostos)*0.01;
    let valorJurosCompostos = valor * (1 + jurosCompostos)**parcelasTotais ;
    valorJurosCompostos = valorJurosCompostos.toFixed(2);
+
+   let valorJuros = valor * (1 + jurosCompostos)**parcelasTotais + (jurosSimples*valor*parcelasTotais) ;
+   valorJuros = valorJuros.toFixed(2);
    
    const strValorTotal = "Valor total: " + valor + "\n";
    const strValorTotalJurosSimples = "Valor total com juros simples: "+ valorJurosSimples + "\n";
    const strValorTotalJurosCompostos = "Valor total com juros compostos: "+ valorJurosCompostos + "\n";
-   document.getElementById("terminal").innerHTML = strValorTotal + strValorTotalJurosSimples + strValorTotalJurosCompostos;
+   const strValorTotalJurosTotais = "Valor total com juros compostos e simples: "+ valorJuros + "\n";
+   document.getElementById("terminal").innerHTML = strValorTotal + strValorTotalJurosSimples + strValorTotalJurosCompostos + strValorTotalJurosTotais;
  }
 
+ //Se a entrada de texto de valor estiver vázia
  if (varformterminal == ""){
    document.getElementById("terminal").innerHTML = "Valor nulo";
  }
