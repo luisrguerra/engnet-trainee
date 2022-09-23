@@ -45,6 +45,14 @@
     margin-right:1em;
     border-radius: 4px;
   }
+  #btnLoad{
+    float: right;
+    margin-right:1em;
+    border-radius: 4px;
+  }
+  #btnLoad > input[type="file"]{
+    display: none;
+  }
 
 </style>
 
@@ -90,6 +98,11 @@ Adicionar
 Download
 </button>
 
+<label id="btnLoad" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black">
+  Carregar
+  <input id="fileUpload" type="file">
+</label>
+
 <!-- pular linha -->
 <br>
 <br>
@@ -105,6 +118,7 @@ Download
 </body>
 
 <script>
+
 const saveTemplateAsFile = (filename, dataObjToWrite) => {
     const blob = new Blob([JSON.stringify(dataObjToWrite)], { type: "text/json" });
     const link = document.createElement("a");
@@ -135,13 +149,29 @@ function imprimirParcelaTerminal (valor,parcelas,jurosSimples, jurosCompostos){
    valor + "X" + parcelas + " - Simples: " + jurosSimples + " Composto: "+ jurosCompostos + "\n";
    document.getElementById("terminal").appendChild(textoTerminal);
 }
-function imprimirTerminal(ValorTotal, ValorTotalJurosSimples,ValorTotalJurosCompostos,ValorTotalJurosTotais){
-   var textoTerminal = document.createElement("P");
+function imprimirResultadoTerminal(){
+
+  let somaArrayValorTotal = 0;
+  let somaArrayValorTotalJurosSimples = 0;
+  let somaArrayValorTotalJurosCompostos = 0;
+  let somaArrayValorTotalJurosTotais = 0;
+
+   //soma dos arrays
+   for(let contagem = 0; contagem < objJson.length; contagem++) {
+   
+     imprimirParcelaTerminal (objJson[contagem].valorParcela, objJson[contagem].parcelamentos, objJson[contagem].jurosSimples, objJson[contagem].jurosCompostos);
+     
+     somaArrayValorTotal = somaArrayValorTotal + objJson[contagem].valor;
+     somaArrayValorTotalJurosSimples = somaArrayValorTotalJurosSimples + objJson[contagem].valorTotalJurosSimples;
+     somaArrayValorTotalJurosCompostos = somaArrayValorTotalJurosCompostos + objJson[contagem].valorTotalJurosCompostos;
+     somaArrayValorTotalJurosTotais = somaArrayValorTotalJurosTotais + objJson[contagem].valorJuros;
+   };
+  var textoTerminal = document.createElement("P");
    textoTerminal.innerHTML  =
-   "Valor total: " + ValorTotal + "\n" +
-   "Valor total com juros simples: " + ValorTotalJurosSimples.toFixed(2) + "\n" +
-   "Valor total com juros compostos: " + ValorTotalJurosCompostos.toFixed(2) + "\n" +
-   "Valor total com juros compostos e simples: " + ValorTotalJurosTotais.toFixed(2);
+   "\nValor total: " + somaArrayValorTotal + "\n" +
+   "Valor total com juros simples: " + somaArrayValorTotalJurosSimples.toFixed(2) + "\n" +
+   "Valor total com juros compostos: " + somaArrayValorTotalJurosCompostos.toFixed(2) + "\n" +
+   "Valor total com juros compostos e simples: " + somaArrayValorTotalJurosTotais.toFixed(2);
    document.getElementById("terminal").appendChild(textoTerminal);
 }
 
@@ -182,14 +212,6 @@ function funcaobtn(){
 
    let valorJuros = valor * (1 + jurosCompostos)**parcelasTotais + (jurosSimples*valor*parcelasTotais) ;
 
-   //imprimir
-   let somaArrayValorTotal = 0;
-   let somaArrayValorTotalJurosSimples = 0;
-   let somaArrayValorTotalJurosCompostos = 0;
-   let somaArrayValorTotalJurosTotais = 0;
-
-   const txtJson = `[{"valorTotal":1, "valorTotalJurosCompostos":2, "valorJuros":3},{"valorTotal":4, "valorTotalJurosCompostos":6, "valorJuros":7}]`;
-   //objJson = JSON.parse(txtJson);
    let objParcelamento = {
     valorParcela:null,
     valor:null,
@@ -210,17 +232,8 @@ function funcaobtn(){
    objParcelamento.valorTotalJurosCompostos = valorJurosCompostos;
    objParcelamento.valorJuros = valorJuros;
    objJson.push(objParcelamento);
-   //soma dos arrays
-   for(let contagem = 0; contagem < objJson.length; contagem++) {
 
-    imprimirParcelaTerminal (objJson[contagem].valorParcela, objJson[contagem].parcelamentos, objJson[contagem].jurosSimples, objJson[contagem].jurosCompostos);
-
-    somaArrayValorTotal = somaArrayValorTotal + objJson[contagem].valor;
-    somaArrayValorTotalJurosSimples = somaArrayValorTotalJurosSimples + objJson[contagem].valorTotalJurosSimples;
-    somaArrayValorTotalJurosCompostos = somaArrayValorTotalJurosCompostos + objJson[contagem].valorTotalJurosCompostos;
-    somaArrayValorTotalJurosTotais = somaArrayValorTotalJurosTotais + objJson[contagem].valorJuros;
-   };
-   imprimirTerminal(somaArrayValorTotal, somaArrayValorTotalJurosSimples,somaArrayValorTotalJurosCompostos,somaArrayValorTotalJurosTotais);
+   imprimirResultadoTerminal();
  }
 
  //Se a entrada de texto de valor estiver vázia
@@ -233,5 +246,22 @@ function funcaobtn(){
 function funcaoBtnSave(){
    saveTemplateAsFile("dados.json", objJson);
 }
+
+document.getElementById('fileUpload').addEventListener('change', (event) =>{
+  var files = document.getElementById('fileUpload').files;
+  if (files.length <= 0) {
+    return false;
+  }
+
+  var fileReader = new FileReader();
+
+  fileReader.onload = function(e) { 
+    objJson = JSON.parse(e.target.result);
+    limparTerminal()
+    imprimirResultadoTerminal();
+
+  }
+  fileReader.readAsText(files.item(0));
+});
 
 </script>
