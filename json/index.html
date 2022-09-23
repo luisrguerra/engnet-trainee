@@ -32,6 +32,9 @@
     padding: 1em 1em;
     border-radius: 8px;
   }
+  #terminal > p{
+    margin:0;
+  }
   #btnCalcular{
     float: right;
     margin-right:1em;
@@ -75,7 +78,7 @@
 
 <!-- botao enviar -->
 <button id="btnCalcular" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaobtn()">
-Calcular
+Adicionar
 </button>
 
 <!-- pular linha -->
@@ -95,10 +98,31 @@ Calcular
 <script>
 let objJson = [];
 
+function limparTerminal(){
+  document.getElementById("terminal").innerHTML = "";
+}
+
+function imprimirParcelaTerminal (valor,parcelas,jurosSimples, jurosCompostos){
+   var textoTerminal = document.createElement("P");
+   textoTerminal.innerHTML  =
+   valor + "X" + parcelas + " - Simples: " + jurosSimples + " Composto: "+ jurosCompostos + "\n";
+   document.getElementById("terminal").appendChild(textoTerminal);
+}
+function imprimirTerminal(ValorTotal, ValorTotalJurosSimples,ValorTotalJurosCompostos,ValorTotalJurosTotais){
+   var textoTerminal = document.createElement("P");
+   textoTerminal.innerHTML  =
+   "Valor total: " + ValorTotal + "\n" +
+   "Valor total com juros simples: " + ValorTotalJurosSimples.toFixed(2) + "\n" +
+   "Valor total com juros compostos: " + ValorTotalJurosCompostos.toFixed(2) + "\n" +
+   "Valor total com juros compostos e simples: " + ValorTotalJurosTotais.toFixed(2);
+   document.getElementById("terminal").appendChild(textoTerminal);
+}
+
 // funcao executada ao apertar o botao submit "enviar"
 function funcaobtn(){
+ var varformterminal = document.getElementById("formterminal").value;
  if (varformterminal != ""){
-   var varformterminal = document.getElementById("formterminal").value;
+   limparTerminal();
    varformterminal = varformterminal.replace(',', '.');
    let parcela = parseFloat(varformterminal);
    
@@ -130,7 +154,7 @@ function funcaobtn(){
    let valorJurosCompostos = valor * (1 + jurosCompostos)**parcelasTotais ;
 
    let valorJuros = valor * (1 + jurosCompostos)**parcelasTotais + (jurosSimples*valor*parcelasTotais) ;
-   
+
    //imprimir
    let somaArrayValorTotal = 0;
    let somaArrayValorTotalJurosSimples = 0;
@@ -140,35 +164,36 @@ function funcaobtn(){
    const txtJson = `[{"valorTotal":1, "valorTotalJurosCompostos":2, "valorJuros":3},{"valorTotal":4, "valorTotalJurosCompostos":6, "valorJuros":7}]`;
    //objJson = JSON.parse(txtJson);
    let objParcelamento = {
-    valorTotal:null,
+    valorParcela:null,
+    valor:null,
+    parcelamentos:null,
+    jurosSimples:null,
+    jurosCompostos:null,
     valorTotalJurosSimples: null,
     valorTotalJurosCompostos:null,
     valorJuros:null
    };
 
-   objParcelamento.valorTotal = valor;
+   objParcelamento.valor = valor;
+   objParcelamento.valorParcela = parcela;
+   objParcelamento.jurosSimples = jurosSimples;
+   objParcelamento.jurosCompostos = jurosCompostos;
+   objParcelamento.parcelamentos = parcelasTotais;
    objParcelamento.valorTotalJurosSimples = valorJurosSimples;
    objParcelamento.valorTotalJurosCompostos = valorJurosCompostos;
    objParcelamento.valorJuros = valorJuros;
    objJson.push(objParcelamento);
-   
    //soma dos arrays
    for(let contagem = 0; contagem < objJson.length; contagem++) {
-    somaArrayValorTotal = somaArrayValorTotal + objJson[contagem].valorTotal;
+
+    imprimirParcelaTerminal (objJson[contagem].valorParcela, objJson[contagem].parcelamentos, objJson[contagem].jurosSimples, objJson[contagem].jurosCompostos);
+
+    somaArrayValorTotal = somaArrayValorTotal + objJson[contagem].valor;
     somaArrayValorTotalJurosSimples = somaArrayValorTotalJurosSimples + objJson[contagem].valorTotalJurosSimples;
     somaArrayValorTotalJurosCompostos = somaArrayValorTotalJurosCompostos + objJson[contagem].valorTotalJurosCompostos;
     somaArrayValorTotalJurosTotais = somaArrayValorTotalJurosTotais + objJson[contagem].valorJuros;
    };
-   
-   document.getElementById("terminal").innerHTML = "";
-   var textoTerminal = document.createElement("P");
-   textoTerminal.innerHTML  =
-   "Valor total: " + somaArrayValorTotal + "\n" +
-   "Valor total com juros simples: " + somaArrayValorTotalJurosSimples.toFixed(2) + "\n" +
-   "Valor total com juros compostos: " + somaArrayValorTotalJurosCompostos.toFixed(2) + "\n" +
-   "Valor total com juros compostos e simples: " + somaArrayValorTotalJurosTotais.toFixed(2)  + "\n";
-   document.getElementById("terminal").appendChild(textoTerminal);
-
+   imprimirTerminal(somaArrayValorTotal, somaArrayValorTotalJurosSimples,somaArrayValorTotalJurosCompostos,somaArrayValorTotalJurosTotais);
  }
 
  //Se a entrada de texto de valor estiver vázia
