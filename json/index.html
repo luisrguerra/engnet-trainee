@@ -93,6 +93,7 @@ Calcular
 </body>
 
 <script>
+let objJson = [];
 
 // funcao executada ao apertar o botao submit "enviar"
 function funcaobtn(){
@@ -117,40 +118,55 @@ function funcaobtn(){
    
    const valor = parcela * parcelasTotais;
    let valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
-   valorJurosSimples = valorJurosSimples.toFixed(2);
 
    var varformJurosCompostos = document.getElementById("formJurosCompostos").value;
    if (varformJurosCompostos == "") {
     varformJurosCompostos = "0";
    }
    varformJurosCompostos = varformJurosCompostos.replace(',', '.');
+
+   //matematica
    const jurosCompostos = parseFloat(varformJurosCompostos)*0.01;
    let valorJurosCompostos = valor * (1 + jurosCompostos)**parcelasTotais ;
-   valorJurosCompostos = valorJurosCompostos.toFixed(2);
 
    let valorJuros = valor * (1 + jurosCompostos)**parcelasTotais + (jurosSimples*valor*parcelasTotais) ;
-   valorJuros = valorJuros.toFixed(2);
    
-   let strValorTotal = 0;
-   let strValorTotalJurosSimples = 0;
-   let strValorTotalJurosCompostos = 0;
-   let strValorTotalJurosTotais = 0;
+   //imprimir
+   let somaArrayValorTotal = 0;
+   let somaArrayValorTotalJurosSimples = 0;
+   let somaArrayValorTotalJurosCompostos = 0;
+   let somaArrayValorTotalJurosTotais = 0;
 
    const txtJson = `[{"valorTotal":1, "valorTotalJurosCompostos":2, "valorJuros":3},{"valorTotal":4, "valorTotalJurosCompostos":6, "valorJuros":7}]`;
-   const objJson = JSON.parse(txtJson);
+   //objJson = JSON.parse(txtJson);
+   let objParcelamento = {
+    valorTotal:null,
+    valorTotalJurosSimples: null,
+    valorTotalJurosCompostos:null,
+    valorJuros:null
+   };
 
+   objParcelamento.valorTotal = valor;
+   objParcelamento.valorTotalJurosSimples = valorJurosSimples;
+   objParcelamento.valorTotalJurosCompostos = valorJurosCompostos;
+   objParcelamento.valorJuros = valorJuros;
+   objJson.push(objParcelamento);
+   
+   //soma dos arrays
    for(let contagem = 0; contagem < objJson.length; contagem++) {
-    strValorTotal = strValorTotal + objJson[contagem].valorTotal;
-    strValorTotalJurosSimples = strValorTotalJurosSimples + objJson[contagem].valorTotalJurosCompostos;
-    strValorTotalJurosTotais = strValorTotalJurosTotais + objJson[contagem].valorJuros;
+    somaArrayValorTotal = somaArrayValorTotal + objJson[contagem].valorTotal;
+    somaArrayValorTotalJurosSimples = somaArrayValorTotalJurosSimples + objJson[contagem].valorTotalJurosSimples;
+    somaArrayValorTotalJurosCompostos = somaArrayValorTotalJurosCompostos + objJson[contagem].valorTotalJurosCompostos;
+    somaArrayValorTotalJurosTotais = somaArrayValorTotalJurosTotais + objJson[contagem].valorJuros;
    };
    
    document.getElementById("terminal").innerHTML = "";
    var textoTerminal = document.createElement("P");
    textoTerminal.innerHTML  =
-   "Valor total: " + strValorTotal + "\n" +
-   "Valor total com juros simples: " + strValorTotalJurosSimples + "\n" +
-   "Valor total com juros compostos e simples: " + strValorTotalJurosTotais  + "\n";
+   "Valor total: " + somaArrayValorTotal + "\n" +
+   "Valor total com juros simples: " + somaArrayValorTotalJurosSimples.toFixed(2) + "\n" +
+   "Valor total com juros compostos: " + somaArrayValorTotalJurosCompostos.toFixed(2) + "\n" +
+   "Valor total com juros compostos e simples: " + somaArrayValorTotalJurosTotais.toFixed(2)  + "\n";
    document.getElementById("terminal").appendChild(textoTerminal);
 
  }
