@@ -40,6 +40,11 @@
     margin-right:1em;
     border-radius: 4px;
   }
+  #btnDownload{
+    float: right;
+    margin-right:1em;
+    border-radius: 4px;
+  }
 
 </style>
 
@@ -81,6 +86,10 @@
 Adicionar
 </button>
 
+<button id="btnDownload" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaoBtnSave()">
+Download
+</button>
+
 <!-- pular linha -->
 <br>
 <br>
@@ -96,6 +105,24 @@ Adicionar
 </body>
 
 <script>
+const saveTemplateAsFile = (filename, dataObjToWrite) => {
+    const blob = new Blob([JSON.stringify(dataObjToWrite)], { type: "text/json" });
+    const link = document.createElement("a");
+
+    link.download = filename;
+    link.href = window.URL.createObjectURL(blob);
+    link.dataset.downloadurl = ["text/json", link.download, link.href].join(":");
+
+    const evt = new MouseEvent("click", {
+        view: window,
+        bubbles: true,
+        cancelable: true,
+    });
+
+    link.dispatchEvent(evt);
+    link.remove()
+};
+
 let objJson = [];
 
 function limparTerminal(){
@@ -201,6 +228,10 @@ function funcaobtn(){
    document.getElementById("terminal").innerHTML = "Valor nulo";
  }
 
+}
+
+function funcaoBtnSave(){
+   saveTemplateAsFile("dados.json", objJson);
 }
 
 </script>
