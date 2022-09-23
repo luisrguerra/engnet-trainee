@@ -1,0 +1,165 @@
+<head>
+ 
+ <!-- carrecargar recursos do material dessign -->
+ <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+ <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+ <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+ 
+ <!-- correção de resolução no smartphone -->
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+</head>
+
+<!-- css -->
+<style>
+  @media only screen and (max-width: 800px) {
+    div.corpo{
+        margin-inline: 1em;
+    }
+  }
+  @media only screen and (min-width: 800px) {
+    div.corpo{
+        margin-inline: 35%;
+    }
+  }
+  #terminal{
+    background-color:white;
+    color:#282C34;
+    border-color: #d4d9e3;
+    border-style: solid;
+    border-width: 1px;
+    white-space: pre-line;
+    padding: 1em 1em;
+    border-radius: 8px;
+  }
+  #btnCalcular{
+    float: right;
+    margin-right:1em;
+    border-radius: 4px;
+  }
+
+</style>
+
+<body>
+
+<!-- correção da margem -->
+<div class="corpo">
+<!-- pular linha -->
+<br>
+
+<!-- campo de input de texto -->
+<h6>Valor:</h6>
+<div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+   <input class="mdl-textfield__input" type="text" id="formterminal">
+   <label class="mdl-textfield__label">Ex:15</label>
+</div>
+
+<h6>Numero de parcelas totais:</h6>
+<div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+    <input class="mdl-textfield__input" type="text" id="formParcelasTotais">
+    <label class="mdl-textfield__label">Ex:12</label>
+ </div>
+
+ <h6>Juros simples em porcentagem:</h6>
+ <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+    <input class="mdl-textfield__input" type="text" id="formJurosSimples">
+    <label class="mdl-textfield__label">Ex:10 sem o "%"</label>
+ </div>
+
+ <h6>Juros compostos em porcentagem:</h6>
+ <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+    <input class="mdl-textfield__input" type="text" id="formJurosCompostos">
+    <label class="mdl-textfield__label">Ex:5 sem o "%"</label>
+ </div>
+
+
+<!-- botao enviar -->
+<button id="btnCalcular" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaobtn()">
+Calcular
+</button>
+
+<!-- pular linha -->
+<br>
+<br>
+<br>
+<br>
+
+<!-- texto terminal -->
+<p id=terminal >Calculadora de parcelamentos</p>
+<br>
+
+</div>
+
+</body>
+
+<script>
+
+// funcao executada ao apertar o botao submit "enviar"
+function funcaobtn(){
+ if (varformterminal != ""){
+   var varformterminal = document.getElementById("formterminal").value;
+   varformterminal = varformterminal.replace(',', '.');
+   let parcela = parseFloat(varformterminal);
+   
+   var varformParcelasTotais = document.getElementById("formParcelasTotais").value;
+   if (varformParcelasTotais == "") {
+    varformParcelasTotais = "1";
+   }
+   varformParcelasTotais = varformParcelasTotais.replace(',', '.');
+   let parcelasTotais = parseFloat(varformParcelasTotais);
+
+   var varformJurosSimples = document.getElementById("formJurosSimples").value;
+   if (varformJurosSimples == "") {
+    varformJurosSimples = "0";
+   }
+   varformJurosSimples = varformJurosSimples.replace(',', '.');
+   let jurosSimples = parseFloat(varformJurosSimples)*0.01;
+   
+   const valor = parcela * parcelasTotais;
+   let valorJurosSimples = valor + (jurosSimples*valor*parcelasTotais);
+   valorJurosSimples = valorJurosSimples.toFixed(2);
+
+   var varformJurosCompostos = document.getElementById("formJurosCompostos").value;
+   if (varformJurosCompostos == "") {
+    varformJurosCompostos = "0";
+   }
+   varformJurosCompostos = varformJurosCompostos.replace(',', '.');
+   const jurosCompostos = parseFloat(varformJurosCompostos)*0.01;
+   let valorJurosCompostos = valor * (1 + jurosCompostos)**parcelasTotais ;
+   valorJurosCompostos = valorJurosCompostos.toFixed(2);
+
+   let valorJuros = valor * (1 + jurosCompostos)**parcelasTotais + (jurosSimples*valor*parcelasTotais) ;
+   valorJuros = valorJuros.toFixed(2);
+   
+   let strValorTotal = 0;
+   let strValorTotalJurosSimples = 0;
+   let strValorTotalJurosCompostos = 0;
+   let strValorTotalJurosTotais = 0;
+
+   const txtJson = `[{"valorTotal":1, "valorTotalJurosCompostos":2, "valorJuros":3},{"valorTotal":4, "valorTotalJurosCompostos":6, "valorJuros":7}]`;
+   const objJson = JSON.parse(txtJson);
+
+   for(let contagem = 0; contagem < objJson.length; contagem++) {
+    strValorTotal = strValorTotal + objJson[contagem].valorTotal;
+    strValorTotalJurosSimples = strValorTotalJurosSimples + objJson[contagem].valorTotalJurosCompostos;
+    strValorTotalJurosTotais = strValorTotalJurosTotais + objJson[contagem].valorJuros;
+   };
+   
+   document.getElementById("terminal").innerHTML = "";
+   var textoTerminal = document.createElement("P");
+   textoTerminal.innerHTML  =
+   "Valor total: " + strValorTotal + "\n" +
+   "Valor total com juros simples: " + strValorTotalJurosSimples + "\n" +
+   "Valor total com juros compostos e simples: " + strValorTotalJurosTotais  + "\n";
+   document.getElementById("terminal").appendChild(textoTerminal);
+
+ }
+
+ //Se a entrada de texto de valor estiver vázia
+ if (varformterminal == ""){
+   document.getElementById("terminal").innerHTML = "Valor nulo";
+ }
+
+}
+
+</script>
