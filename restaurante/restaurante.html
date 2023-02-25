@@ -44,7 +44,7 @@
 			cart.forEach(function(item, index) {
 				var li = document.createElement("li");
 				li.className = "list-group-item";
-				li.innerHTML = item.name + " - $" + item.price.toFixed(2) + " <button class='btn btn-sm btn-danger float-right' onclick='removeFromCart(" + index + ")'>-</button>";
+				li.innerHTML = item.name + ": $" + item.price.toFixed(2) + " <button class='btn btn-sm btn-danger float-right' onclick='removeFromCart(" + index + ")'>-</button>";
 				cartList.appendChild(li);
 			});
 			document.getElementById("total").innerHTML = "Total: $" + total.toFixed(2);
@@ -71,11 +71,11 @@
 	<div class="container">
 		<h3>Menu</h3>
 		<ul style="font-size: 24px;" class="list-group">
-			<li class="list-group-item">Refrigerante - $6 <button onclick="addToCart(0)">+</button></li>
-			<li class="list-group-item">Suco - $7 <button onclick="addToCart(1)">+</button></li>
-			<li class="list-group-item">Água - $3 <button onclick="addToCart(2)">+</button></li>
-			<li class="list-group-item">Inteira - $40 <button onclick="addToCart(3)">+</button></li>
-			<li class="list-group-item">Meia - $20 <button onclick="addToCart(4)">+</button></li>
+			<li class="list-group-item">Refrigerante: $6 <button onclick="addToCart(0)">+</button></li>
+			<li class="list-group-item">Suco: $7 <button onclick="addToCart(1)">+</button></li>
+			<li class="list-group-item">Água: $3 <button onclick="addToCart(2)">+</button></li>
+			<li class="list-group-item">Inteira: $40 <button onclick="addToCart(3)">+</button></li>
+			<li class="list-group-item">Meia: $20 <button onclick="addToCart(4)">+</button></li>
 		</ul>
 
 		<h3>Carrinho</h3>
@@ -84,8 +84,7 @@
 
 		<h3 id="total">Total: $0.00</h3>
 
-		<button style="font-size: 18px;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--red mdl-color-text--white" onclick="resetPage()">Resetar</button>
-        <br>
+		<button style="margin-bottom: 1em;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--red mdl-color-text--white" onclick="resetPage()">Resetar</button>
 	</div>
 </body>
 </html>
