@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <!-- correção de resolução no smartphone -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Calculadora de Pedido de Restaurante</title>
+	<script>
+		// Definindo os itens do menu e os preços
+		var items = [
+			{name: "Refrigerante", price: 6},
+			{name: "Suco", price: 7},
+			{name: "Água", price: 3},
+			{name: "Inteira", price: 40},
+			{name: "Meia", price: 20}
+		];
+
+		// Inicializando as variáveis
+		var cart = [];
+		var total = 0;
+
+		// Função para adicionar um item ao carrinho
+		function addToCart(index) {
+			var item = items[index];
+			cart.push(item);
+			total += item.price;
+			updateCart();
+		}
+
+		// Função para remover um item do carrinho
+		function removeFromCart(index) {
+			var item = cart[index];
+			cart.splice(index, 1);
+			total -= item.price;
+			updateCart();
+		}
+
+		// Função para atualizar o carrinho e o total
+		function updateCart() {
+			var cartList = document.getElementById("cart");
+			cartList.innerHTML = "";
+			cart.forEach(function(item, index) {
+				var li = document.createElement("li");
+				li.className = "list-group-item";
+				li.innerHTML = item.name + " - $" + item.price.toFixed(2) + " <button class='btn btn-sm btn-danger float-right' onclick='removeFromCart(" + index + ")'>-</button>";
+				cartList.appendChild(li);
+			});
+			document.getElementById("total").innerHTML = "Total: $" + total.toFixed(2);
+		}
+
+		// Função para resetar a página
+		function resetPage() {
+			location.reload();
+		}
+	</script>
+    <style>
+        .container{
+            margin: 1em;
+        }
+        button{
+          font-size: 20px;
+        }
+        li{
+            margin-block: 1em;
+        }
+    </style>
+</head>
+<body>
+	<div class="container">
+		<h3>Menu</h3>
+		<ul style="font-size: 24px;" class="list-group">
+			<li class="list-group-item">Refrigerante - $6 <button onclick="addToCart(0)">+</button></li>
+			<li class="list-group-item">Suco - $7 <button onclick="addToCart(1)">+</button></li>
+			<li class="list-group-item">Água - $3 <button onclick="addToCart(2)">+</button></li>
+			<li class="list-group-item">Inteira - $40 <button onclick="addToCart(3)">+</button></li>
+			<li class="list-group-item">Meia - $20 <button onclick="addToCart(4)">+</button></li>
+		</ul>
+
+		<h3>Carrinho</h3>
+		<ul style="font-size: 24px;" class="list-group" id="cart">
+		</ul>
+
+		<h3 id="total">Total: $0.00</h3>
+
+		<button style="font-size: 18px;" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--red mdl-color-text--white" onclick="resetPage()">Resetar</button>
+        <br>
+	</div>
+</body>
+</html>
