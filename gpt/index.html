@@ -41,12 +41,6 @@
 <!-- pular linha -->
 <br>
 
-<h6>Chave:</h6>
-<div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
-   <input class="mdl-textfield__input" type="text" id="formkey">
-   <label class="mdl-textfield__label"></label>
-</div>
-
 <!-- campo de input de texto -->
 <h6>Prompt:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
@@ -73,10 +67,14 @@ Enviar
 
 <script type="module">
 import openailib from 'https://cdn.jsdelivr.net/npm/openai@3.2.1/+esm';
-console.log("openailib: ",openailib);
+//console.log("openailib: ",openailib);
 let configuration;
 let openai;
+let loading = false;
 const gptModelName = "gpt-3.5-turbo";
+const personalidade = `
+Você é a ZillaGPT, uma raposa assistente e prestativa.
+`;
 
 function initializeChat(behavior) {
   return [
@@ -85,7 +83,7 @@ function initializeChat(behavior) {
 }
 
 async function completionsChatTextModelV3(messages) {
-  return await openai.createChatCompletion({
+  const parameters ={
       model: gptModelName,
       messages: messages,
       /*
@@ -95,7 +93,9 @@ async function completionsChatTextModelV3(messages) {
       frequency_penalty: ,
       presence_penalty: ,
       */
-    });
+  };
+  console.log("parameters: ",parameters);
+  return await openai.createChatCompletion(parameters);
 }
 
 async function generateChatMessagesV3(promptText, messages) {
@@ -115,22 +115,43 @@ function lastMessage(messages){
   return messages[messages.length - 1].content;
 }
 
-const btnEnviar = document.getElementById('btnEnviar');
+function key (){
+  const cripto = "YzJzdFExRnhUekJGTVhVeWJuQnZZamx0TVhFMWIwZFVNMEpzWW10R1NteElNemc1ZFdsV09HWlVhMjVNZDFkbE9VWlA=";
+  const apiKey = atob(atob(cripto));
+  return apiKey;
+}
 
-btnEnviar.addEventListener('click', async () => {
-  let apiKey = document.getElementById("formkey").value;
-  console.log("chave: ",apiKey);
+async function configurar(){
   configuration = new openailib.Configuration({
-    apiKey: apiKey,
+    apiKey: key(),
   });
   openai = new openailib.OpenAIApi(configuration);
-  const messages = initializeChat("You are a helpful assistant.");
-  const userInput = document.getElementById("formterminal").value;
-  const mensagesObject = await generateChatMessagesV3(userInput,messages);
-  //console.log("messages: ",messages);
-  //console.log("mensagesObject: ",mensagesObject);
-  const textResponse = lastMessage(mensagesObject);
-  console.log("textResponse: ",textResponse);
+  return initializeChat(personalidade);
+}
+
+function getPrompt(){
+return document.getElementById("formterminal").value;
+}
+
+function setTerminal(text){
+return document.getElementById("terminal").innerHTML = text;
+}
+
+const btnEnviar = document.getElementById('btnEnviar');
+btnEnviar.addEventListener('click', async () => {
+  const userInput = getPrompt();
+  if (loading === false){
+    let initialMessages = await configurar();
+    loading = true;
+    console.log("loading");
+    setTerminal("Pensando...");
+    const mensagesObject = await generateChatMessagesV3(userInput,initialMessages);
+    loading = false;
+    console.log("mensagesObject: ",mensagesObject);
+    const textResponse = lastMessage(mensagesObject);
+    console.log("textResponse: ",textResponse);
+    setTerminal(textResponse);
+  }
 });
 
 </script>
