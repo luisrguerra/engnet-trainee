@@ -73,56 +73,15 @@ Enviar
 
 <script type="module">
 import openailib from 'https://cdn.jsdelivr.net/npm/openai@3.2.1/+esm';
-console.log(openailib);
-let apiKey = '';
-const configuration = new openailib.Configuration({
-  apiKey: apiKey,
-});
-const openai = new openailib.OpenAIApi(configuration);
-
+console.log("openailib: ",openailib);
+let configuration;
+let openai;
 const gptModelName = "gpt-3.5-turbo";
 
 function initializeChat(behavior) {
   return [
     {role: "system", content: behavior}
   ];
-}
-
-async function completionsChatTextModel(promptText) {
-  const messages = [
-   {role: "user", content: promptText}
-  ];
-
-  return await openai.createChatCompletion({
-      model: gptModelName,
-      messages: messages,
-      /*
-      temperature: ,
-      max_tokens: ,
-      top_p: ,
-      frequency_penalty: ,
-      presence_penalty: ,
-      */
-    });
-}
-
-async function completionsChatTextModelV2(promptText, lastAnswer) {
-  const messages = [
-   {role: "assistant", content: lastAnswer},
-   {role: "user", content: promptText}
-  ];
-
-  return await openai.createChatCompletion({
-      model: gptModelName,
-      messages: messages,
-      /*
-      temperature: ,
-      max_tokens: ,
-      top_p: ,
-      frequency_penalty: ,
-      presence_penalty: ,
-      */
-    });
 }
 
 async function completionsChatTextModelV3(messages) {
@@ -137,16 +96,6 @@ async function completionsChatTextModelV3(messages) {
       presence_penalty: ,
       */
     });
-}
-
-async function generateChatMessages(promptText) {
-  const apiResponse = await completionsChatTextModel(promptText);
-  return apiResponse.data.choices[0].message.content;
-}
-
-async function generateChatMessagesV2(promptText, lastAnswer) {
-  const apiResponse = await completionsChatTextModelV2(promptText, lastAnswer);
-  return apiResponse.data.choices[0].message.content;
 }
 
 async function generateChatMessagesV3(promptText, messages) {
@@ -169,14 +118,19 @@ function lastMessage(messages){
 const btnEnviar = document.getElementById('btnEnviar');
 
 btnEnviar.addEventListener('click', async () => {
-  apiKey = document.getElementById("formkey").value;
+  let apiKey = document.getElementById("formkey").value;
   console.log("chave: ",apiKey);
+  configuration = new openailib.Configuration({
+    apiKey: apiKey,
+  });
+  openai = new openailib.OpenAIApi(configuration);
   const messages = initializeChat("You are a helpful assistant.");
   const userInput = document.getElementById("formterminal").value;
-  const mensagesObject = generateChatMessagesV3(userInput,messages);
-  console.log(messages);
-  console.log(mensagesObject);
+  const mensagesObject = await generateChatMessagesV3(userInput,messages);
+  //console.log("messages: ",messages);
+  //console.log("mensagesObject: ",mensagesObject);
   const textResponse = lastMessage(mensagesObject);
+  console.log("textResponse: ",textResponse);
 });
 
 </script>
