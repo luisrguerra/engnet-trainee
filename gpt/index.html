@@ -41,6 +41,12 @@
 <!-- pular linha -->
 <br>
 
+<h6>Chave:</h6>
+<div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
+   <input class="mdl-textfield__input" type="text" id="formkey">
+   <label class="mdl-textfield__label"></label>
+</div>
+
 <!-- campo de input de texto -->
 <h6>Prompt:</h6>
 <div style="width: 100%;" class="mdl-textfield mdl-js-textfield ">
@@ -50,7 +56,7 @@
 
 
 <!-- botao enviar -->
-<button id="btnEnviar" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black" onclick="funcaobtn()">
+<button id="btnEnviar" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-color--white mdl-color-text--black">
 Enviar
 </button>
 
@@ -65,11 +71,112 @@ Enviar
 
 </div>
 
-<script>
+<script type="module">
+import openailib from 'https://cdn.jsdelivr.net/npm/openai@3.2.1/+esm';
+console.log(openailib);
+let apiKey = '';
+const configuration = new openailib.Configuration({
+  apiKey: apiKey,
+});
+const openai = new openailib.OpenAIApi(configuration);
 
+const gptModelName = "gpt-3.5-turbo";
 
-function funcaobtn(){
-
+function initializeChat(behavior) {
+  return [
+    {role: "system", content: behavior}
+  ];
 }
+
+async function completionsChatTextModel(promptText) {
+  const messages = [
+   {role: "user", content: promptText}
+  ];
+
+  return await openai.createChatCompletion({
+      model: gptModelName,
+      messages: messages,
+      /*
+      temperature: ,
+      max_tokens: ,
+      top_p: ,
+      frequency_penalty: ,
+      presence_penalty: ,
+      */
+    });
+}
+
+async function completionsChatTextModelV2(promptText, lastAnswer) {
+  const messages = [
+   {role: "assistant", content: lastAnswer},
+   {role: "user", content: promptText}
+  ];
+
+  return await openai.createChatCompletion({
+      model: gptModelName,
+      messages: messages,
+      /*
+      temperature: ,
+      max_tokens: ,
+      top_p: ,
+      frequency_penalty: ,
+      presence_penalty: ,
+      */
+    });
+}
+
+async function completionsChatTextModelV3(messages) {
+  return await openai.createChatCompletion({
+      model: gptModelName,
+      messages: messages,
+      /*
+      temperature: ,
+      max_tokens: ,
+      top_p: ,
+      frequency_penalty: ,
+      presence_penalty: ,
+      */
+    });
+}
+
+async function generateChatMessages(promptText) {
+  const apiResponse = await completionsChatTextModel(promptText);
+  return apiResponse.data.choices[0].message.content;
+}
+
+async function generateChatMessagesV2(promptText, lastAnswer) {
+  const apiResponse = await completionsChatTextModelV2(promptText, lastAnswer);
+  return apiResponse.data.choices[0].message.content;
+}
+
+async function generateChatMessagesV3(promptText, messages) {
+  const prompt = {role: "user", content: promptText};
+  messages.push(prompt);
+
+  const apiResponse = await completionsChatTextModelV3(messages);
+  const textResponse = apiResponse.data.choices[0].message.content;
+
+  const assistantResponse = {role: "assistant", content: textResponse};
+  messages.push(assistantResponse);
+
+  return messages;
+}
+
+function lastMessage(messages){
+  return messages[messages.length - 1].content;
+}
+
+const btnEnviar = document.getElementById('btnEnviar');
+
+btnEnviar.addEventListener('click', async () => {
+  apiKey = document.getElementById("formkey").value;
+  console.log("chave: ",apiKey);
+  const messages = initializeChat("You are a helpful assistant.");
+  const userInput = document.getElementById("formterminal").value;
+  const mensagesObject = generateChatMessagesV3(userInput,messages);
+  console.log(messages);
+  console.log(mensagesObject);
+  const textResponse = lastMessage(mensagesObject);
+});
 
 </script>
